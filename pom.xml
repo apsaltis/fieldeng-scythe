@@ -61,11 +61,11 @@
   
   
   <build>
-    <sourceDirectory>src/main/java</sourceDirectory>
-    <testSourceDirectory>src/test/java</testSourceDirectory>
+    <sourceDirectory>src/main/scala</sourceDirectory>
+    <testSourceDirectory>src/test/scala</testSourceDirectory>
     <resources>
       <resource>
-        <directory>src/main/java</directory>
+        <directory>src/main/scala</directory>
         <excludes>
           <exclude>**/*.java</exclude>
         </excludes>
@@ -111,8 +111,8 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <sourceDirectory>src/main/java</sourceDirectory>
-    				<testSourceDirectory>src/test/java</testSourceDirectory>
+                    <sourceDirectory>src/main/scala</sourceDirectory>
+    				<testSourceDirectory>src/test/scala</testSourceDirectory>
                 </configuration>
             </plugin>
     </plugins>
