@@ -4,3 +4,5 @@
 .settings
 /.DS_Store
 .DS_Store
+.cache-main
+.cache-tests
