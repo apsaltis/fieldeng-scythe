@@ -11,7 +11,7 @@ import org.apache.spark
 //import sqlContext.implicits._
 import org.apache.spark.sql.SparkSession
 
-class DatasetTest {
+class HelperTest {
   
   case class Signal(tagNm: String, date: java.sql.Timestamp, value: Double )
   
@@ -20,7 +20,7 @@ class DatasetTest {
   }
   
   @Test def interpolate() {
-    val d = new com.hortonworks.scythe.cronus.Dataset
+    val ch = new com.hortonworks.scythe.cronus.Helper
   
     
    val spark = SparkSession
@@ -34,24 +34,21 @@ class DatasetTest {
   //import sqlContext.implicits._
 
     val df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
-    //case class Signal(tagNm: String, date: java.sql.Timestamp, value: Double )
-   
-  val ds = Seq(
-      Signal("mpg1", new java.sql.Timestamp ( df.parse("2017-04-01T11:05:27.444Z").getTime), 22.0),
-      Signal("mpg1", new java.sql.Timestamp (df.parse("2017-04-01T11:05:28.444Z").getTime), 32.0),
-      Signal("mpg1", new java.sql.Timestamp (df.parse("2017-04-01T11:05:29.444Z").getTime), 42.0),
+                                  
+  
+  val ds = Seq(                                 
+      ("mpg1", "2017-04-01T11:05:27.000Z", 22.0),
+      ("mpg1", "2017-04-01T11:05:28.000Z", 32.0),
+      ("mpg1", "2017-04-01T11:05:29.000Z", 42.0),
       
-      Signal("mpg2", new java.sql.Timestamp (df.parse("2017-04-01T11:05:27.444Z").getTime), 23.0),
-      Signal("mpg2", new java.sql.Timestamp (df.parse("2017-04-01T11:05:29.444Z").getTime), 43.0)
-      ).toDF()
+      ("mpg2", "2017-04-01T11:05:27.000Z", 23.0),
+      ("mpg2", "2017-04-01T11:05:29.000Z", 43.0)
+      ).toDF("function", "time", "value")
 
-    //val gg = spark.sparkContext.parallelize(ds)
-    //gg.toDF()
-      
      ds.show() 
      print(ds)
       
-    val rs = d.interpolate("mpg1", List("mpg2"), "function", ds)
+    val rs = ch.interpolate("mpg1", List("mpg2"), "function", ds)
 
     println(rs)
 

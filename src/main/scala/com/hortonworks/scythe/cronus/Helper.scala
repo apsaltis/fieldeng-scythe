@@ -7,7 +7,7 @@ import com.hortonworks.scythe.LinearInterpolation
 import java.text.SimpleDateFormat
 
 
-class Dataset {
+class Helper {
   
   
   def show[T](ds:org.apache.spark.sql.Dataset[T]): Unit = {
@@ -24,7 +24,8 @@ class Dataset {
   
   def interpolate(s1: String, s2: List[String], colSigName: String, df: org.apache.spark.sql.DataFrame ) : List[Tuple2[java.util.Date, Double]] =  {
     
-    val ds1 = df.filter(s"$colSigName === $s1")
+    val ds1= df.filter(df.col(colSigName) === s1)
+    //val ds1 = df.filter(s" '${colSigName}' == '${s1}'")
     
     val s = ds1.collect()
     
@@ -36,8 +37,8 @@ class Dataset {
     
     
     var as = List[(java.util.Date, Double)]()
-    for (sigName <- 0 until s2.length) {
-      val ds2 = df.filter(s"${colSigName} === ${sigName}") 
+    for (sigName <- s2) {
+      val ds2 = df.filter(s"${colSigName} == '${sigName}'") 
   
         val rs2 = ds2.collect.map { x=> ( 
         x(0).toString(), 
