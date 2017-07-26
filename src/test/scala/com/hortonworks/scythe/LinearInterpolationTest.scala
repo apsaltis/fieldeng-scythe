@@ -5,12 +5,11 @@ import java.text.SimpleDateFormat
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
-import org.scalatest.junit.AssertionsForJUnit
 
 import breeze.interpolation.LinearInterpolator
 import breeze.linalg.DenseVector
 
-class LinearInterpolationTest extends AssertionsForJUnit {
+class LinearInterpolationTest {
 
   @Before def initialize() {
     println("Interpolation Tests")

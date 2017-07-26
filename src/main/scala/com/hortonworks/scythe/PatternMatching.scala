@@ -51,7 +51,7 @@ class PatternMatching {
 
     //matches.foreach(println)
 
-    case class TS(time: Int, value: Double)
+   // case class TS(time: Int, value: Double)
 
     val tsArray = matches.map {
       tup =>

@@ -13,7 +13,7 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<java.version>1.8</java.version>
-		<scala.version>2.11.7</scala.version>
+		<scala.version>2.11.8</scala.version>
 	</properties>
 
 	<dependencies>
@@ -21,7 +21,7 @@
 		<dependency>
 			<groupId>org.scalanlp</groupId>
 			<artifactId>breeze_2.11</artifactId>
-			<version>0.12</version>
+			<version>0.13</version>
 		</dependency>
 
 
@@ -46,7 +46,7 @@
 			<scope>test</scope>
 		</dependency>
 
-<!-- 
+
 
 		<dependency>
 			<groupId>org.scalatest</groupId>
@@ -54,13 +54,19 @@
 			<version>3.0.1</version>
 			<scope>test</scope>
 		</dependency>
--->
+
 
 		<dependency>
 			<groupId>org.scala-lang</groupId>
 			<artifactId>scala-library</artifactId>
-			<version>2.11.7</version>
+			<version>${scala.version}</version>
 		</dependency>
+
+<dependency>
+    <groupId>org.typelevel</groupId>
+    <artifactId>macro-compat_2.11</artifactId>
+    <version>1.1.0</version>
+</dependency>
 
 	</dependencies>
 
