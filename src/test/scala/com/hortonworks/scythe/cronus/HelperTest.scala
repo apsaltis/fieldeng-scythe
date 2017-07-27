@@ -44,7 +44,7 @@ class HelperTest {
     ds.show()
     print(ds)
 
-    val map = ch.interpolate("mpg1", List("mpg2"), "function", ds)
+    val map = ch.interpolate("mpg1", List("mpg1", "mpg2"), "function", ds)
 
     println(map)
 
