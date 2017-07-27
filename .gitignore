@@ -7,3 +7,4 @@
 .cache-main
 .cache-tests
 /classes/
+.classes.timestamp
