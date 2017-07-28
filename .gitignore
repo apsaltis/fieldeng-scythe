@@ -8,3 +8,5 @@
 .cache-tests
 /classes/
 .classes.timestamp
+*.swp
+classes.*
