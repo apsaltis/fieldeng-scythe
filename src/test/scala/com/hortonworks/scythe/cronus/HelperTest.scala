@@ -19,6 +19,35 @@ class HelperTest {
     println("Dataset Tests")
   }
 
+  @Test def csv() {
+
+    val spark = SparkSession
+      .builder()
+      .master("local")
+      .appName("Scythe Test Cases")
+      .getOrCreate()
+
+    import spark.implicits._
+    import spark.sqlContext._
+
+    val df = spark.read.format("com.databricks.spark.csv")
+      .option("header", "true")
+      .option("delimiter", ",")
+      .option("inferSchema", "true")
+      .load("/Users/khaslbeck/Documents/workspace/scythe/example.csv")
+    
+      df.printSchema
+      df.show
+      
+      val ch = new com.hortonworks.scythe.cronus.Helper
+      
+      val map = ch.interpolate (
+        "ps", List("ps", "ss"), 
+        "tagName", "yyyy-MM-dd HH:mm", df
+        )
+        
+      map.values.foreach { println }
+  }
   @Test def interpolate() {
     val ch = new com.hortonworks.scythe.cronus.Helper
 
@@ -44,8 +73,12 @@ class HelperTest {
     ds.show()
     print(ds)
 
-    val map = ch.interpolate("mpg1", List("mpg1", "mpg2"), "function", ds)
-
+    val map = ch.interpolate (
+        "mpg1", List("mpg1", "mpg2"), 
+        "function", ds
+        )
+ 
+    map.values.foreach { println }
     println(map)
 
     val mpg1 = map.get("mpg1")

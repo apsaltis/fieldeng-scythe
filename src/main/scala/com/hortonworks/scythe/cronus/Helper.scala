@@ -19,8 +19,12 @@ class Helper {
   /*def interpolate[T](s1: String, s2: List[String], ds: org.apache.spark.sql.Dataset[T] )  {
     interpolate(s1, s2, "function", ds.toDF())      
   }*/
-
+ 
   def interpolate(s1: String, s2: List[String], colSigName: String, df: org.apache.spark.sql.DataFrame): Map[String, List[(String, java.util.Date, Double)]] = {
+    interpolate(s1,s2,colSigName,"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",df)
+  }
+  
+  def interpolate(s1: String, s2: List[String], colSigName: String, dateFrmt: String, df: org.apache.spark.sql.DataFrame): Map[String, List[(String, java.util.Date, Double)]] = {
 
     var map = Map[String, List[(String, java.util.Date, Double)]]()
 
@@ -30,7 +34,7 @@ class Helper {
     // tagName, timestamp, value
     val rs = s.map { x =>
       ( x(0).toString(),
-        new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").parse(x(1).toString()),
+        new SimpleDateFormat(dateFrmt).parse(x(1).toString()),
         x(2).asInstanceOf[Double])
     }.toList
 
@@ -44,7 +48,7 @@ class Helper {
         val rs2 = ds2.collect.map { x =>
           (
             x(0).toString(),
-            new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").parse(x(1).toString()),
+            new SimpleDateFormat(dateFrmt).parse(x(1).toString()),
             x(2).asInstanceOf[Double])
         }.toList
 
