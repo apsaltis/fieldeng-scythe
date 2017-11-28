@@ -12,6 +12,7 @@ val rs = new LinearInterpolation.interpolateDate(sig1Raw, sig2Raw)
 
 # Interpolation DataFrame
 
+val map = ch.interpolate ("mpg1", List("mpg1", "mpg2"), "function", ds)
 
 # Pattern Matching
 95% precision
