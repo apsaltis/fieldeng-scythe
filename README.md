@@ -3,6 +3,7 @@ Time Series Library
 
 
 # Interpolation
+
 val l = new LinearInterpolation
 val rs = l.interpolateDate(sig1Raw, sig2Raw)
 
