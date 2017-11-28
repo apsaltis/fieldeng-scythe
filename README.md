@@ -7,6 +7,9 @@ Time Series Library
 val rs = new LinearInterpolation.interpolateDate(sig1Raw, sig2Raw)
 
 
+![alt tag](https://github.com/hortonworks/fieldeng-scythe/blob/master/linear-tables.png)
+
+
 # Interpolation DataFrame
 
 
