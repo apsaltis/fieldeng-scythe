@@ -2,6 +2,15 @@
 Time Series Library
 
 
+| Time      | TagName     | Value |
+| ----------|:-----------:| -----:|
+| 12:00     | signal1 	  | 0     |
+| 12:01     | signal1     | 0.5   |
+| 12:02 	| signal1     | 1     |
+| 12:03		| signal1	  | 0.5   |
+| 12:04		| signal1	  | 1     |	
+
+
 # Interpolation
 
 val rs = new LinearInterpolation.interpolateDate(sig1Raw, sig2Raw)
