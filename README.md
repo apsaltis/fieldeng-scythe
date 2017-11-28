@@ -23,6 +23,37 @@ val rs = new LinearInterpolation.interpolateDate(sig1Raw, sig2Raw)
 
 val map = ch.interpolate ("mpg1", List("mpg1", "mpg2"), "function", ds)
 
+# Full Example using CSV
+
+    val spark = SparkSession
+      .builder()
+      .master("local")
+      .appName("Scythe Test Cases")
+      .getOrCreate()
+
+    import spark.implicits._
+    import spark.sqlContext._
+
+    val df = spark.read.format("com.databricks.spark.csv")
+      .option("header", "true")
+      .option("delimiter", ",")
+      .option("inferSchema", "true")
+      .load("/scythe/example.csv")
+    
+      df.printSchema
+      df.show
+      
+      val ch = new com.hortonworks.scythe.cronus.Helper
+      
+      val map = ch.interpolate (
+        "ps", List("ps", "ss"), 
+        "tagName", "yyyy-MM-dd HH:mm", df
+        )
+        
+      map.values.foreach { println }
+
+
+
 # Pattern Matching
 95% precision
 
