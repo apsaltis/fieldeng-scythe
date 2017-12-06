@@ -36,6 +36,7 @@ class HelperTest {
       .option("inferSchema", "true")
       .load("/Users/khaslbeck/Documents/workspace/scythe/example.csv")
     
+      
       df.printSchema
       df.show
       

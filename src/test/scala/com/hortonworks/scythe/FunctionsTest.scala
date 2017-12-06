@@ -10,6 +10,7 @@ import breeze.interpolation.LinearInterpolator
 import breeze.linalg.DenseVector
 import com.hortonworks.scythe.functions._
 import org.apache.spark.sql.SparkSession
+import java.util.Date
 
 class FunctionsTest {
 
@@ -27,6 +28,12 @@ class FunctionsTest {
     def avg = average(data)
   }
   */
+  @Test def Long2Double() {
+    val l = new Date().getTime
+    println(l)
+    println(l.doubleValue())
+  }
+  
   
   @Test def avg() {
     
