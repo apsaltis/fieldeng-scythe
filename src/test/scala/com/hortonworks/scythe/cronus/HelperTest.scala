@@ -34,7 +34,7 @@ class HelperTest {
       .option("header", "true")
       .option("delimiter", ",")
       .option("inferSchema", "true")
-      .load("/Users/khaslbeck/Documents/workspace/scythe/example.csv")
+      .load("example.csv")
     
       
       df.printSchema

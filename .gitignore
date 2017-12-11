@@ -7,4 +7,7 @@
 .cache-main
 .cache-tests
 /classes/
-.classes.timestamp
+classes.*
+*.swp
+derby.log
+metastore_db/
