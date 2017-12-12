@@ -21,6 +21,8 @@ class HelperTest {
 
   @Test def csv() {
 
+    val path = getClass.getResource("/example.csv").getPath
+    
     val spark = SparkSession
       .builder()
       .master("local")
@@ -34,9 +36,8 @@ class HelperTest {
       .option("header", "true")
       .option("delimiter", ",")
       .option("inferSchema", "true")
-      .load("example.csv")
+      .load(path)
     
-      
       df.printSchema
       df.show
       

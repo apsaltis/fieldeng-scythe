@@ -5,14 +5,134 @@ import java.text.SimpleDateFormat
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
+import org.junit.Ignore
 
 import breeze.interpolation.LinearInterpolator
 import breeze.linalg.DenseVector
+import com.hortonworks.scythe.functions._
 
 class LinearInterpolationTest {
 
   @Before def initialize() {
     println("Interpolation Tests")
+  }
+  
+  @Test def linearInterpolate() {
+
+    val x = DenseVector(s2.map(x => x._1): _*)
+    val y = DenseVector(s2.map(x => x._2): _*)
+
+    val f = LinearInterpolator(x, y)
+
+    val rs = s1.map { case (x, y) => f(x) }
+
+    rs.foreach { println }
+    
+    val actual = rs.toArray
+    val expected = Array(2.0, 2.75, 3.5, 4.25, 5.0, 4.0, 3.0, 2.0, 1.0, 1.25, 1.5, 1.75, 2.0)
+    for (i <- 0 until actual.length) {
+      Assert.assertEquals(expected(i), actual(i), 0.001)
+    }
+  }
+  
+  /**
+   * down sampling requires aggregation of many points to single value
+   * avg, vs last value
+   */
+  @Test def downSample() {
+    
+    // reformat all timestamps to lower granularity and then aggregate
+    val rate = "M"
+    var df = new SimpleDateFormat("yyyy-MM-dd")
+    rate match {
+      case "D" => df = new SimpleDateFormat("yyyy-MM-dd")
+      case "H" => df = new SimpleDateFormat("yyyy-MM-dd HH")
+      case "M" => df = new SimpleDateFormat("yyyy-MM-dd HH:mm")
+      case "S" => df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+    }
+    
+    //val f = sig1RawSeconds.map(f => (df.format(f._1), f._2)  )
+    sig1RawSeconds.foreach { println }
+    val g = sig1RawSeconds.groupBy(f=> df.format(f._1))
+      .mapValues(values => values.map(_._2).toIterable.avg)
+      
+    g.foreach(println)
+    
+  }
+  
+  /**
+   * upsampling requires interpolation of newly generated points
+   */
+  @Ignore def upsample() {
+    
+    val d = 1000 * 60 * 60 * 24
+    val step = d
+    
+   val c = sig2Raw.map { x => x._1.getTime.toDouble}
+   
+    val b = c.sliding(2, 1).toList
+    for (pair <- b) {
+      var timeDelta = pair(pair.length) - pair(0)
+      var prev = 0 
+      for (time <- pair) {
+        var delta = prev - time
+        var additionalXValues =   (delta / step).toInt
+        var xList = collection.mutable.ArrayBuffer()
+        for (newV <-0 until additionalXValues) {
+            //xList = xList :+ time * step
+        }
+      }
+    }
+    
+    
+   /*val b = c.sliding(2, 1).toList
+   val newdatapoints = b.map{ l => l.map { time => time * d  }}
+  print(newdatapoints)
+   */
+    
+    val s2 = sig2Raw.map { x => (x._1.getTime.toDouble, x._2) }
+    
+    val x = DenseVector(s2.map(x=> x._1):_* )
+    val y = DenseVector(s2.map(y=> y._2):_* )
+    
+    val f = LinearInterpolator(x,y)
+    
+    val s1yValues = s2.map{ case (x,y) => f(x) }
+    val interpRs = sig2Raw.map(x => new SimpleDateFormat("HH:mm:ss").format(x._1)) zip s1yValues
+    interpRs.foreach { println }
+  }
+  
+  @Test def resample() {
+    val sample = 60 * 60 * 1000
+    val s2 = sig2Raw.map { x => (x._1.getTime.toDouble, x._2) }
+    
+    val x = DenseVector(s2.map(x=> x._1):_* )
+    val y = DenseVector(s2.map(y=> y._2):_* )
+    
+    val f = LinearInterpolator(x,y)
+    
+    val s1yValues = s2.map{ case (x,y) => f(x) }
+    val interpRs = sig2Raw.map(x => new SimpleDateFormat("HH:mm:ss").format(x._1)) zip s1yValues
+    interpRs.foreach { println }
+  }
+  
+  @Test def interpolationDoubleScale() {
+    
+    //sig1Raw, sig2Raw
+    
+    val s1 =  sig1Raw.map { x => (x._1.getTime.toDouble, x._2) }
+    val s2 =  sig2Raw.map { x => (x._1.getTime.toDouble, x._2) }
+    
+    val x = DenseVector(s2.map(x=> x._1):_* )
+    val y = DenseVector(s2.map(y=> y._2):_* )
+    
+    val f = LinearInterpolator(x,y)
+    val s2yValues = s1.map{ case (x,y) => f(x) }
+    val interpRs = sig1Raw.map(x => new SimpleDateFormat("HH:mm:ss").format(x._1)) zip s2yValues
+    
+    s2yValues.foreach { println }
+    
+    interpRs.foreach { println }
   }
   
   @Test def interpolateDate() {
@@ -40,22 +160,6 @@ class LinearInterpolationTest {
     for (i <- 0 until rs.size) {
       Assert.assertEquals(expectedResult(i)._1.getTime, rs(i)._1)
       Assert.assertEquals(expectedResult(i)._2, rs(i)._2, 0.001)
-    }
-  }
-  
-  @Test def linearInterpolate() {
-
-    val x = DenseVector(s2.map(x => x._1): _*)
-    val y = DenseVector(s2.map(x => x._2): _*)
-
-    val f = LinearInterpolator(x, y)
-
-    val rs = s1.map { case (x, y) => f(x) }
-
-    val actual = rs.toArray
-    val expected = Array(2.0, 2.75, 3.5, 4.25, 5.0, 4.0, 3.0, 2.0, 1.0, 1.25, 1.5, 1.75, 2.0)
-    for (i <- 0 until actual.length) {
-      Assert.assertEquals(expected(i), actual(i), 0.001)
     }
   }
 
@@ -109,6 +213,21 @@ class LinearInterpolationTest {
 
   private val s2 = List((0.0, 2.0), (1.0, 5.0), (2.0, 1.0), (3.0, 2.0))
 
+  private val sig1RawSeconds = List(
+    (d.parse("2017-04-01 12:00:00"), 0.0),
+    (d.parse("2017-04-01 12:00:10"), 0.5),
+    (d.parse("2017-04-01 12:00:20"), 1.0),
+    (d.parse("2017-04-01 12:00:30"), 0.5),
+    (d.parse("2017-04-01 12:00:40"), 1.0),
+    (d.parse("2017-04-01 12:00:50"), 0.0),
+    (d.parse("2017-04-01 12:01:10"), 0.5),
+    (d.parse("2017-04-01 12:01:20"), 1.0),
+    (d.parse("2017-04-01 12:01:40"), 0.5),
+    (d.parse("2017-04-01 12:02:00"), 1.0),
+    (d.parse("2017-04-01 12:03:22"), 1.0),
+    (d.parse("2017-04-01 12:03:27"), 1.0),
+    (d.parse("2017-04-01 12:03:36"), 5.0))
+  
   private val sig1Raw = List(
     (d.parse("2017-04-01 12:00"), 0.0),
     (d.parse("2017-04-01 12:01"), 0.5),
