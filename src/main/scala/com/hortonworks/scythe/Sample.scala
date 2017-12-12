@@ -9,8 +9,7 @@ import org.apache.spark.sql._
 import org.apache.spark.sql.types._
 import java.sql.{ Date, Timestamp }
 
-class Sample {
-  
+class Sample(var fmt: String = "yyyy-MM-dd HH:mm") {
   /**
    * "D" => Day, "H" => Hour, "M" => Minute, "S" => Second
    * agg => AVG, SUM, MIN, MAX, LAST
@@ -33,10 +32,10 @@ class Sample {
    
    rtn.toList 
   }
-  
-  def downSample(rate: String, agg: String, ds: DataFrame) : DataFrame = {
+
+  def downSample(rate: String, agg: String, ds: DataFrame, tsCol:String = "time") : DataFrame = {
     
-    var fmt = "yyyy-MM-dd HH:mm"  // minute default
+    //var fmt = "yyyy-MM-dd HH:mm"  // minute default
     rate match {
       case "Y" => fmt = "yyyy"  
       case "Month" => fmt ="yyyy-MM"
@@ -46,7 +45,7 @@ class Sample {
       case "S" => fmt = "yyyy-MM-dd HH:mm:ss"
     }
     
-    val c = date_format(ds("time"), fmt)  
+    val c = date_format(ds(tsCol), fmt)  
     val ds1 = ds.withColumn("time_bin", c )
     
     ds1.groupBy("time_bin").avg("value").orderBy("time_bin")

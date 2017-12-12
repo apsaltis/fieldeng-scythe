@@ -36,7 +36,7 @@ val df = spark.read.format("com.databricks.spark.csv")
   .option("header", "true")
   .option("delimiter", ",")
   .option("inferSchema", "true")
-  .load("example.csv")
+  .load("src/test/resources/example.csv")
 
 df.printSchema
 df.show
