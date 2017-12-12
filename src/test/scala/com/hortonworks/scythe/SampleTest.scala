@@ -41,10 +41,11 @@ class SampleTest {
       .option("inferSchema", "true")
       .load(path)
 
-    val valH = new Sample().downSample("H", "AVG", ds).select("avg(value)").collect
+    val blah = "yyyy-MM-dd HH:mm"
+    val valH = new Sample(blah).downSample("H", "AVG", ds).select("avg(value)").collect
     Assert.assertEquals("Hour", 1.0, valH(0).getDouble(0), 0.0)
     
-    val valM = new Sample().downSample("M", "AVG", ds).select("avg(value)").collect
+    val valM = new Sample(blah).downSample("M", "AVG", ds).select("avg(value)").collect
     Assert.assertEquals("Minute", 0.25, valM(0).getDouble(0), 0.0)
     
   }
