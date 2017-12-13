@@ -46,6 +46,9 @@ class SampleTest {
     
     val valM = new Sample().downSample("M", "AVG", ds).select("avg(value)").collect
     Assert.assertEquals("Minute", 0.25, valM(0).getDouble(0), 0.0)
+
+    val valD = new Sample().downSample("D", "AVG", ds).select("avg(value)").collect
+    Assert.assertEquals("Day", 1.0, valD(0).getDouble(0), 0.0)
   }
   
   @Ignore def downSampleScratch() {

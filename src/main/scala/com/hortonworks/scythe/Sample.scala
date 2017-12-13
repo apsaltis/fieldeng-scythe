@@ -37,7 +37,6 @@ class Sample() {
 
   def downSample(rate: String, agg: String, ds: DataFrame, tsCol:String = "time", valCol:String = "value") : DataFrame = {
     val c = date_format(ds(tsCol), formatStr(rate))  
-    //val ds1 = ds.withColumn("time_bin", c)
 
     //Breaks unit test
     val format = List(IntegerType, DoubleType).contains(ds.schema(tsCol).dataType)
