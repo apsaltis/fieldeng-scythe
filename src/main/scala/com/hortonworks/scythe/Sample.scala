@@ -25,6 +25,8 @@ class Sample() {
    * agg => AVG, SUM, MIN, MAX, LAST
    */
 
+   //TODO: Support yyyy/MM/dd HH:mm:ss
+
     rate match {
       case "Y" =>  "yyyy"
       case "Month" =>  "yyyy-MM"

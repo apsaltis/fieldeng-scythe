@@ -18,16 +18,12 @@ val rs = new LinearInterpolation.interpolateDate(sig1Raw, sig2Raw)
 
 ![alt tag](https://github.com/hortonworks/fieldeng-scythe/blob/master/linear-tables.png)
 
-
-# Interpolation DataFrame
-
-val map = ch.interpolate ("mpg1", List("mpg1", "mpg2"), "function", ds)
-
-# Full Example using CSV
+# Start Spark shell with dependencies
 ```
-spark-shell --jars target/scythe-0.0.1-SNAPSHOT.jar --packages com.databricks:spark-csv_2.10:1.5.0 
+spark-shell --jars target/scythe-0.0.1-SNAPSHOT.jar
 ```
 
+# Load Sample data from CSV
 ```
 import spark.implicits._
 import spark.sqlContext._
@@ -40,15 +36,28 @@ val df = spark.read.format("com.databricks.spark.csv")
 
 df.printSchema
 df.show
+```
 
-val ch = new com.hortonworks.scythe.cronus.Helper
-  
+# Interpolate one tag against the other
+```
+import com.hortonworks.scythe.cronus.Helper
+val ch = Helper
+val map = ch.interpolate ("mpg1", List("mpg1", "mpg2"), "function", ds)
+```
+
+# Interpolate values for tag "ss" to align to "ps"
+```
 val map = ch.interpolate (
   "ps", List("ps", "ss"), 
   "tagName", "yyyy-MM-dd HH:mm", df
 )
     
 map.values.foreach { println }
+```
+
+# Downsample a signal
+```
+val hourlyResampled = new Sample().downSample("H", "AVG", df).select("avg(value)").collect
 ```
 
 # Pattern Matching
