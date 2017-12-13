@@ -9,49 +9,46 @@ import org.apache.spark.sql._
 import org.apache.spark.sql.types._
 import java.sql.{ Date, Timestamp }
 
-class Sample(var fmt: String = "yyyy-MM-dd HH:mm") {
-  /**
-   * "D" => Day, "H" => Hour, "M" => Minute, "S" => Second
-   * agg => AVG, SUM, MIN, MAX, LAST
-   */
+class Sample() {
+
   def downSample(rate: String, agg: String, s: List[Tuple2[java.util.Date, Double]]) : List[Tuple2[String, Double]] = {
-    
-    //var fmt = "yyyy-MM-dd" // default rate
-    rate match {
-      case "Y" => fmt = "yyyy"
-      case "Month" => fmt = "yyyy-MM"
-      case "D" => fmt = "yyyy-MM-dd"
-      case "H" => fmt = "yyyy-MM-dd HH"
-      case "M" => fmt = "yyyy-MM-dd HH:mm"
-      case "S" => fmt = "yyyy-MM-dd HH:mm:ss"
-    }
-    
     val rtn = s.groupBy(f => 
-      new SimpleDateFormat(fmt).format(f._1)) 
+      new SimpleDateFormat(formatStr(rate)).format(f._1)) 
     .mapValues(values => values.map(_._2).toIterable.avg)
    
    rtn.toList 
   }
 
-  def downSample(rate: String, agg: String, ds: DataFrame, tsCol:String = "time") : DataFrame = {
+  def formatStr(rate: String) : String = {
   /**
    * "D" => Day, "H" => Hour, "M" => Minute, "S" => Second
    * agg => AVG, SUM, MIN, MAX, LAST
    */
-    
-    //var fmt = "yyyy-MM-dd HH:mm"  // minute default
+
     rate match {
-      case "Y" => fmt = "yyyy"  
-      case "Month" => fmt ="yyyy-MM"
-      case "D" => fmt = "yyyy-MM-dd"
-      case "H" => fmt = "yyyy-MM-dd HH"
-      case "M" => fmt = "yyyy-MM-dd HH:mm"
-      case "S" => fmt = "yyyy-MM-dd HH:mm:ss"
+      case "Y" =>  "yyyy"
+      case "Month" =>  "yyyy-MM"
+      case "D" => "yyyy-MM-dd"
+      case "H" => "yyyy-MM-dd HH"
+      case "M" => "yyyy-MM-dd HH:mm"
+      case "S" => "yyyy-MM-dd HH:mm:ss"
     }
-    
-    val c = date_format(ds(tsCol), fmt)  
-    val ds1 = ds.withColumn("time_bin", c )
-    
+  }
+
+  def downSample(rate: String, agg: String, ds: DataFrame, tsCol:String = "time", valCol:String = "value") : DataFrame = {
+    val c = date_format(ds(tsCol), formatStr(rate))  
+    val ds1 = ds.withColumn("time_bin", c)
+
+    //Breaks unit test
+    /*
+    val format = List(IntegerType, DoubleType).contains(ds.schema(tsCol).dataType)
+    val ds1 = format match {
+      case true => ds.withColumn("time_bin", c)
+      case false => ds.withColumnRenamed(tsCol, "time_bin")
+    }
+    */
+
+    //TODO: support multiple aggregation types
     ds1.groupBy("time_bin").avg("value").orderBy("time_bin")
   }
 }
