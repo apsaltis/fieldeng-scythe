@@ -9,9 +9,9 @@ import org.apache.spark.sql._
 import org.apache.spark.sql.types._
 import java.sql.{ Date, Timestamp }
 
-class Sample() {
+class Resample() {
 
-  def downSample(rate: String, agg: String, s: List[Tuple2[java.util.Date, Double]]) : List[Tuple2[String, Double]] = {
+  def down(rate: String, agg: String, s: List[Tuple2[java.util.Date, Double]]) : List[Tuple2[String, Double]] = {
     val rtn = s.groupBy(f => 
       new SimpleDateFormat(formatStr(rate)).format(f._1)) 
     .mapValues(values => values.map(_._2).toIterable.avg)
@@ -37,7 +37,7 @@ class Sample() {
     }
   }
 
-  def downSample(rate: String, agg: String, ds: DataFrame, tsCol:String = "time", valCol:String = "value") : DataFrame = {
+  def down(rate: String, agg: String, ds: DataFrame, tsCol:String = "time", valCol:String = "value") : DataFrame = {
     val c = date_format(ds(tsCol), formatStr(rate))  
 
     //Breaks unit test

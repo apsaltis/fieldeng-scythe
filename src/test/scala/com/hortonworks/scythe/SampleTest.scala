@@ -16,13 +16,13 @@ import org.apache.spark
 import org.apache.spark.sql.SparkSession
 import org.apache.spark.sql.functions._
 
-class SampleTest {
+class ResampleTest {
   
   @Before def initialize() {
     println("Sample Tests")
   }
   
-  @Test def downSample() {
+  @Test def down() {
     
     val path = getClass.getResource("/downsample.csv").getPath
     
@@ -41,17 +41,17 @@ class SampleTest {
       .option("inferSchema", "true")
       .load(path)
 
-    val valH = new Sample().downSample("H", "AVG", ds).select("avg(value)").collect
+    val valH = new Resample().down("H", "AVG", ds).select("avg(value)").collect
     Assert.assertEquals("Hour", 1.0, valH(0).getDouble(0), 0.0)
     
-    val valM = new Sample().downSample("M", "AVG", ds).select("avg(value)").collect
+    val valM = new Resample().down("M", "AVG", ds).select("avg(value)").collect
     Assert.assertEquals("Minute", 0.25, valM(0).getDouble(0), 0.0)
 
-    val valD = new Sample().downSample("D", "AVG", ds).select("avg(value)").collect
+    val valD = new Resample().down("D", "AVG", ds).select("avg(value)").collect
     Assert.assertEquals("Day", 1.0, valD(0).getDouble(0), 0.0)
   }
   
-  @Ignore def downSampleScratch() {
+  @Ignore def downScratch() {
     
     val path = getClass.getResource("/downsample.csv").getPath
     
