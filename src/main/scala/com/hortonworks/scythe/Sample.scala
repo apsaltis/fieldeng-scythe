@@ -37,16 +37,14 @@ class Sample() {
 
   def downSample(rate: String, agg: String, ds: DataFrame, tsCol:String = "time", valCol:String = "value") : DataFrame = {
     val c = date_format(ds(tsCol), formatStr(rate))  
-    val ds1 = ds.withColumn("time_bin", c)
+    //val ds1 = ds.withColumn("time_bin", c)
 
     //Breaks unit test
-    /*
     val format = List(IntegerType, DoubleType).contains(ds.schema(tsCol).dataType)
     val ds1 = format match {
-      case true => ds.withColumn("time_bin", c)
-      case false => ds.withColumnRenamed(tsCol, "time_bin")
+      case true => ds.withColumnRenamed(tsCol, "time_bin")
+      case false => ds.withColumn("time_bin", c)
     }
-    */
 
     //TODO: support multiple aggregation types
     ds1.groupBy("time_bin").avg(valCol).orderBy("time_bin")
