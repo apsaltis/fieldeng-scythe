@@ -49,6 +49,6 @@ class Sample() {
     */
 
     //TODO: support multiple aggregation types
-    ds1.groupBy("time_bin").avg("value").orderBy("time_bin")
+    ds1.groupBy("time_bin").avg(valCol).orderBy("time_bin")
   }
 }
