@@ -41,6 +41,7 @@ class HelperTest {
       df.printSchema
       df.show
       
+      
       val ch = new com.hortonworks.scythe.cronus.Helper
       
       val map = ch.interpolate (

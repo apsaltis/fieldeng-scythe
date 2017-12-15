@@ -35,72 +35,45 @@ class LinearInterpolationTest {
     }
   }
   
-  /**
-   * down sampling requires aggregation of many points to single value
-   * avg, vs last value
-   */
-  @Test def downSample() {
-    
-    // reformat all timestamps to lower granularity and then aggregate
-    val rate = "M"
-    var df = new SimpleDateFormat("yyyy-MM-dd")
-    rate match {
-      case "D" => df = new SimpleDateFormat("yyyy-MM-dd")
-      case "H" => df = new SimpleDateFormat("yyyy-MM-dd HH")
-      case "M" => df = new SimpleDateFormat("yyyy-MM-dd HH:mm")
-      case "S" => df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-    }
-    
-    //val f = sig1RawSeconds.map(f => (df.format(f._1), f._2)  )
-    sig1RawSeconds.foreach { println }
-    val g = sig1RawSeconds.groupBy(f=> df.format(f._1))
-      .mapValues(values => values.map(_._2).toIterable.avg)
-      
-    g.foreach(println)
-    
-  }
   
   /**
    * upsampling requires interpolation of newly generated points
    */
-  @Ignore def upsample() {
+  @Test def upsample() {
     
-    val d = 1000 * 60 * 60 * 24
-    val step = d
+    var xList = collection.mutable.ArrayBuffer[Double]()
+    val sec  = 1000
+    val min  = 60 * sec
+    val hour = 60 * min * sec
+    val day  = 24 * hour * min * sec
     
-   val c = sig2Raw.map { x => x._1.getTime.toDouble}
+    val step = sec
+    
+    val c = sig2Raw.map { x => x._1.getTime.toDouble}
    
-    val b = c.sliding(2, 1).toList
-    for (pair <- b) {
-      var timeDelta = pair(pair.length) - pair(0)
-      var prev = 0 
-      for (time <- pair) {
-        var delta = prev - time
-        var additionalXValues =   (delta / step).toInt
-        var xList = collection.mutable.ArrayBuffer()
-        for (newV <-0 until additionalXValues) {
-            //xList = xList :+ time * step
-        }
+    val listOfPairs = c.sliding(2, 1).toList
+    for (pair <- listOfPairs) {
+      
+      var t1 = pair(0)
+      var t2 = pair(1)
+      var timeDelta = t2 - t1
+     
+      println(step)
+      println(timeDelta)
+      var dp = t1
+      var additionalXValues = (timeDelta / step).toInt
+      for (newV <-0 until additionalXValues) {
+        dp += step
+        xList = xList :+ dp
       }
     }
     
+    for (d <- xList) {
+      println (new java.util.Date(d.toLong) )
+    }
     
-   /*val b = c.sliding(2, 1).toList
-   val newdatapoints = b.map{ l => l.map { time => time * d  }}
-  print(newdatapoints)
-   */
-    
-    val s2 = sig2Raw.map { x => (x._1.getTime.toDouble, x._2) }
-    
-    val x = DenseVector(s2.map(x=> x._1):_* )
-    val y = DenseVector(s2.map(y=> y._2):_* )
-    
-    val f = LinearInterpolator(x,y)
-    
-    val s1yValues = s2.map{ case (x,y) => f(x) }
-    val interpRs = sig2Raw.map(x => new SimpleDateFormat("HH:mm:ss").format(x._1)) zip s1yValues
-    interpRs.foreach { println }
   }
+    
   
   @Test def resample() {
     val sample = 60 * 60 * 1000
