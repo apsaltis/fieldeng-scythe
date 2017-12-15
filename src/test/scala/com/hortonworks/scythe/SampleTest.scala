@@ -85,4 +85,52 @@ class ResampleTest {
     //val dd = spark.sql("SELECT avg(value) as value, FROM_UNIXTIME(time,'YYYY-MM-dd HH:mm') as time_bin  FROM dataset group by FROM_UNIXTIME(time,'YYYY-MM-dd HH:mm')")
     //dd.show
   }
+  
+    /**
+   * upsampling requires interpolation of newly generated points
+   */
+  @Test def upsample() {
+    
+    var xList = collection.mutable.ArrayBuffer[Double]()
+    val sec  = 1000
+    val min  = 60 * sec
+    val hour = 60 * min * sec
+    val day  = 24 * hour * min * sec
+    
+    val step = sec
+    
+    val c = sig2Raw.map { x => x._1.getTime.toDouble}
+   
+    val listOfPairs = c.sliding(2, 1).toList
+    for (pair <- listOfPairs) {
+      
+      var t1 = pair(0)
+      var t2 = pair(1)
+      var timeDelta = t2 - t1
+     
+      println(step)
+      println(timeDelta)
+      var dp = t1
+      var additionalXValues = (timeDelta / step).toInt
+      for (newV <-0 until additionalXValues) {
+        dp += step
+        xList = xList :+ dp
+      }
+    }
+    
+    for (d <- xList) {
+      println (new java.util.Date(d.toLong) )
+    }
+    
+  }
+
+  private val df = new SimpleDateFormat("yyyy-MM-dd")
+  private val d = new SimpleDateFormat("yyyy-MM-dd HH:mm")
+  
+  private val sig2Raw = List(
+    (d.parse("2017-04-01 12:00"), 2.0),
+    (d.parse("2017-04-01 12:04"), 5.0),
+    (d.parse("2017-04-01 12:05"), 5.0),
+    (d.parse("2017-04-01 12:08"), 1.0),
+    (d.parse("2017-04-01 12:12"), 2.0))
 }
