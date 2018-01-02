@@ -11,3 +11,5 @@ classes.*
 *.swp
 derby.log
 metastore_db/
+.idea
+.iml
