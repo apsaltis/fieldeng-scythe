@@ -5,10 +5,11 @@ import java.sql.Timestamp
 class PatternMatching {
 
   /**
-   * findPattern takes a series of tagName, timestamp, value and looks for matching patterns
-   * in a series of data or a list of series.  In the case of list[list[]] it will be distributed
-   * accuracy effects how similiar of a shape you want to find ex: .15 is 85% match
-   */
+    * @author Kirk
+    * findPattern takes a series of tagName, timestamp, value and looks for matching patterns
+    * in a series of data or a list of series.  In the case of list[list[]] it will be distributed
+    * accuracy effects how similiar of a shape you want to find ex: .15 is 85% match
+    **/
   def findPatternLong(acc: Double, p: List[ Tuple3[String, Long, Double] ], s: List[Tuple3[String, Long, Double]] ) 
   : Array[Array[Tuple3[String, java.sql.Timestamp, Double]]] = {
    val pattern = p.map {

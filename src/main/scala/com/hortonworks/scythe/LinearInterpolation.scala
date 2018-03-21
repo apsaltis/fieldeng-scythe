@@ -7,9 +7,11 @@ import scala.Tuple2
 import java.util.Date
 
 /**
- * LinearInterpolator is a wrapper of Scala Breeze LinearInterpolator, it provides helper functionality for
- * converting dateTimes to even interval Doubles for interpolation.
+  * @author Kirk
+  * LinearInterpolator is a wrapper of Scala Breeze LinearInterpolator, it provides helper functionality for
+  * converting dateTimes to even interval Doubles for interpolation.
  */
+
 
 class LinearInterpolation {
   

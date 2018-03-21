@@ -16,8 +16,19 @@ import org.apache.spark
 import org.apache.spark.sql.SparkSession
 import org.apache.spark.sql.functions._
 
+import org.apache.log4j.Logger
+import org.apache.log4j.Level
+
+/**
+  * @author Kirk
+  */
+
 class ResampleTest {
-  
+
+
+  Logger.getLogger("org").setLevel(Level.OFF)
+  Logger.getLogger("akka").setLevel(Level.OFF)
+
   @Before def initialize() {
     println("Sample Tests")
   }
@@ -40,6 +51,9 @@ class ResampleTest {
       .option("delimiter", ",")
       .option("inferSchema", "true")
       .load(path)
+
+    val df = new Resample().down("M", "AVG", ds)
+    df.show
 
     val valH = new Resample().down("H", "AVG", ds).select("avg(value)").collect
     Assert.assertEquals("Hour", 1.0, valH(0).getDouble(0), 0.0)

@@ -9,6 +9,10 @@ import org.apache.spark.sql._
 import org.apache.spark.sql.types._
 import java.sql.{ Date, Timestamp }
 
+
+/**
+  * @author Kirk
+  */
 class Resample() {
 
   def down(rate: String, agg: String, s: List[Tuple2[java.util.Date, Double]]) : List[Tuple2[String, Double]] = {
